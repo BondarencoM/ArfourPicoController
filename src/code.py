@@ -1,4 +1,5 @@
 from Machine import Machine
-
+print("Starting")
 m = Machine()
-m.Move(0,100,100)
+while True:
+    m.Move(0,100,100)
