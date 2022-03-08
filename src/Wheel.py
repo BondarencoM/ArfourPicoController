@@ -15,4 +15,6 @@ class Wheel():
         self.runMotor = Motor(pwmDrive, dirF, dirB)
         self.runPID = PID()
 
+    def Move(self, direction_platform, distance, speed)
+
 

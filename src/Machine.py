@@ -18,7 +18,7 @@ class Machine():
         self.back_right = Wheel(ios.BR_PWM, ios.BR_DirF, ios.BR_DirB, ios.BR_EnA, ios.BR_EnB)
 
     def Forward(self):
-        self.runWheels.WheelFL()
+
         in4 = DigitalInOut(board.GP7)
         in4.direction = digitalio.Direction.OUTPUT
         in4.value = True
