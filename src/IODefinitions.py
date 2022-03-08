@@ -11,8 +11,7 @@ import math
 #FRONT LEFT MOTOR
 #[FL (Dr1 ch1)]
 #FL_PWM	-> GP2	(using PWM 1A)
-FL_PWM = DigitalInOut(board.GP2)
-FL_PWM.direction = digitalio.Direction.OUTPUT
+FL_PWM = pwmio.PWMOut(board.GP2, duty_cycle = int(2**13.5), frequency = 500)
 #FL_DirF	-> GP3	(turning forward)
 FL_DirF = DigitalInOut(board.GP3)
 FL_DirF.direction = digitalio.Direction.OUTPUT
@@ -90,10 +89,4 @@ BR_EnA.direction = digitalio.Direction.INPUT
 BR_EnB = DigitalInOut(board.GP12)
 BR_EnB.direction = digitalio.Direction.INPUT
 
-# pwm = pwmio.PWMOut(board.GP2, duty_cycle = int(2**15-1), frequency = 500)
-#
-# enc = rotaryio.IncrementalEncoder(board.GP13, board.GP12)
-last_position = None
-while True:
-    FR_DirF.value = True
-    FR_DirB.value = False
+
