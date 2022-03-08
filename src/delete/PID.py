@@ -1,9 +1,10 @@
 from digitalio import DigitalInOut
-from gpiozero import PWMOutputDevice, Motor
 import pwmio
 import board
-import rotaryio
 import digitalio
+import time
+import rotaryio
+import math
 
 class PID():
 
