@@ -18,21 +18,7 @@ class Machine():
         self.back_right = Wheel(ios.BR_PWM, ios.BR_DirF, ios.BR_DirB, ios.BR_EnA, ios.BR_EnB)
 
     def Forward(self):
-
-        in4 = DigitalInOut(board.GP7)
-        in4.direction = digitalio.Direction.OUTPUT
-        in4.value = True
-
-        in5 = DigitalInOut(board.GP8)
-        in5.direction = digitalio.Direction.OUTPUT
-        in5.value = False
-
-
-        pwm = pwmio.PWMOut(board.GP6, duty_cycle = 2**15, frequency = 500)
-
-
-        while True:
-            pass
+        self.front_left.Wheel(
 
     def Leftsideways(self):
 

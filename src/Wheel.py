@@ -16,5 +16,6 @@ class Wheel():
         self.runPID = PID()
 
     def Move(self, direction_platform, distance, speed)
+        self.direction_platform
 
 
