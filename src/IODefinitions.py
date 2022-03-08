@@ -94,6 +94,6 @@ BR_EnB.direction = digitalio.Direction.INPUT
 #
 # enc = rotaryio.IncrementalEncoder(board.GP13, board.GP12)
 last_position = None
-while True:
-    FR_DirF.value = True
-    FR_DirB.value = False
+# while True:
+#     FR_DirF.value = True
+#     FR_DirB.value = False
