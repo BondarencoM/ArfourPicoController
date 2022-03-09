@@ -12,16 +12,33 @@ while True:
     if serial.connected:
         # when there is new data
         if serial.in_waiting:
-            print(serial.in_waiting)
-            byte_in = serial.read(1)
-            print(byte_in)
+            # how many bytes?
+            print("Bytes to read:   ", serial.in_waiting)
+
+            # read the first byte
+            command_byte = serial.read(1)
+            print("First byte:      ", command_byte)
             
+            # how many bytes left?
+            print("Bytes left:      ", serial.in_waiting)
+
+            # read the second byte
+            second_byte = serial.read(1)
+            print("Second byte: ", second_byte)
+            
+            # how many bytes left?
+            print("Bytes left:      ", serial.in_waiting)
 
             # probably a state machine
             # when the first byte means to move
-            if byte_in == 99:
+            if command_byte == 99:
                 # do something
-                print("move")
+                print("command move")
 
+            # clear buffer
+            serial.reset_input_buffer()
+
+            # and see if anything is left
+            print("Bytes left:      ", serial.in_waiting)
 
     time.sleep(1)
