@@ -14,3 +14,4 @@ class Machine():
     def Move(self, direction_platform, distance, speed):
         self.front_left.Move(direction_platform, distance, speed)
         self.front_right.Move(direction_platform, distance, speed)
+
