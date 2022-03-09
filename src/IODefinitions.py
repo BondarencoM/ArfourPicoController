@@ -59,34 +59,26 @@ BR_DirB.direction = digitalio.Direction.OUTPUT
 
 #ENCODER FRONT LEFT
 #FL_EnA	-> GP8
-FL_EnA = DigitalInOut(board.GP8)
-FL_EnA.direction = digitalio.Direction.INPUT
+FL_EnA = board.GP8
 #FL_EnB	-> GP9
-FL_EnB = DigitalInOut(board.GP9)
-FL_EnB.direction = digitalio.Direction.INPUT
-
+FL_EnB = board.GP9
+    
 #ENCODER FRONT RIGHT
 #FR_EnA	-> GP11
-FR_EnA = DigitalInOut(board.GP11)
-FR_EnA.direction = digitalio.Direction.INPUT
+FR_EnA = board.GP11
 #FR_EnB	-> GP10
-FR_EnB = DigitalInOut(board.GP10)
-FR_EnB.direction = digitalio.Direction.INPUT
+FR_EnB = board.GP10
 
 #ENCODER BACK LEFT
 #BL_EnA	-> GP14
-BL_EnA = DigitalInOut(board.GP14)
-BL_EnA.direction = digitalio.Direction.INPUT
+BL_EnA = board.GP14
 #BL_EnB	-> GP15
-BL_EnB = DigitalInOut(board.GP15)
-BL_EnB.direction = digitalio.Direction.INPUT
+BL_EnB = board.GP15
 
 #ENCODER BACK RIGHT
 #BR_EnA	-> GP13
-BR_EnA = DigitalInOut(board.GP13)
-BR_EnA.direction = digitalio.Direction.INPUT
+BR_EnA = board.GP13
 #BR_EnB	-> GP12
-BR_EnB = DigitalInOut(board.GP12)
-BR_EnB.direction = digitalio.Direction.INPUT
+BR_EnB = board.GP12
 
 
