@@ -1,4 +1,7 @@
 # Communication Class
+from re import S
+
+
 class Protocol:
     ## "Private Variables"
     # sent data storage
