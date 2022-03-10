@@ -37,6 +37,6 @@ class Wheel:
             self.pulses = self.distance / self.distance_per_pulse
             set_pulses = self.runEncoder.position
             EncA_Pulses_after_distance = self.runEncoder.position - self.pulses
-            self.runMotor.Move(forward, speed)
             if EncA_Pulses_after_distance != set_pulses:
-                self.runMotor.Move(0, 0)
+                self.runMotor.Move(forward, speed)
+            self.runMotor.Move(0, 0)
