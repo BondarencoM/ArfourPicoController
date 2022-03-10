@@ -1,5 +1,3 @@
-from digitalio import DigitalInOut
-
 class Motor():
 
     def __init__(self, pwmDrive, dirF, dirB):
