@@ -1,7 +1,9 @@
 from Wheel import Wheel
 
 import IODefinitions as ios
+import time
 
+POLL_DELAY = 0.001
 
 class Machine():
 
@@ -19,11 +21,17 @@ class Machine():
             self.back_left.Move(True, distance, speed)
             self.back_right.Move(True, distance, speed)
 
+            while not self.UpdateAll():
+                time.sleep(POLL_DELAY)
+
         if direction_platform == 90:
             self.front_left.Move(False, distance, speed)
             self.front_right.Move(True, distance, speed)
             self.back_left.Move(True, distance, speed)
             self.back_right.Move(False, distance, speed)
+
+            while not self.UpdateAll():
+                time.sleep(POLL_DELAY)
 
         if direction_platform == 180:
             self.front_left.Move(False, distance, speed)
@@ -31,8 +39,23 @@ class Machine():
             self.back_left.Move(False, distance, speed)
             self.back_right.Move(False, distance, speed)
 
+            while not self.UpdateAll():
+                time.sleep(POLL_DELAY)
+
         if direction_platform == 270:
             self.front_left.Move(True, distance, speed)
             self.front_right.Move(False, distance, speed)
             self.back_left.Move(False, distance, speed)
             self.back_right.Move(True, distance, speed)
+
+            while not self.UpdateAll():
+                time.sleep(POLL_DELAY)
+
+    def Stop(self):
+        self.front_left.Move(True, 0, 0)
+        self.front_right.Move(False, 0, 0)
+        self.back_left.Move(False, 0, 0)
+        self.back_right.Move(True, 0, 0)
+    
+    def UpdateAll(self):
+        return self.front_left.Update() and self.front_right.Update() and self.back_left.Update() and self.back_right.Update()
