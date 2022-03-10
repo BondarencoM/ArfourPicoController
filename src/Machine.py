@@ -35,5 +35,5 @@ class Machine():
             self.front_left.Move(True, distance, speed)
             self.front_right.Move(False, distance, speed)
             self.back_left.Move(False, distance, speed)
-            self.back_right.Move(True, distance, speed)
+
 
