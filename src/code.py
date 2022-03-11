@@ -1,21 +1,15 @@
 # The imports of all used libraries
 import time
-import usb_cdc
+import protocol
 
 ## Setup
-serial = usb_cdc.console
+comms = protocol.Protocol()
+
+current_command = [None]
 
 ## Loop
 while True:
-    # when the connection is there
-    if serial.connected:
-        # when there is new data
-        if serial.in_waiting == 4:
-            # how many bytes?
-            print("Bytes to read:   ", serial.in_waiting)
+    current_command = comms.update_command()
+    print("in loop: ", current_command)
 
-            # read the first byte
-            command_byte = serial.read(1)
-            print("First byte:      ", command_byte)
-
-    time.sleep(1)
+    time.sleep(2)

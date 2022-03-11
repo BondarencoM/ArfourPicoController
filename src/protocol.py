@@ -1,33 +1,43 @@
+# imports
+import usb_cdc
+
 # Communication Class
-from re import S
-
-
 class Protocol:
     ## "Private Variables"
+    # value to check for when searching for data
+    waiting_poss = 2
+
     # sent data storage
     command = None
     direction = None
     speed = None
     distance = None
 
-    commandList = {command, direction, speed, distance}
+    commandList = []
+    prevCommandList = []
 
     # encoding values
-    max_direction = 359 
-    max_speed = 100 
-    max_distance = 100 
+    max_direction = 359
+    max_speed = 100
 
     ## "Public Funtions"
     # Initialition
     def __init__(self):
-        self.serial = usb_cdc.console
+        self.serial = usb_cdc.data
+        self.commandList = [None]
 
     # function to get the new orders
     def update_command(self):
         # when the connection is there
         if self.serial.connected:
+            # save previous list
+            self.prevCommandList = self.commandList
+
             # when there is new data
-            if self.serial.in_waiting > 2:
+            if self.serial.in_waiting > self.waiting_poss:
+                # clear the current list
+                self.commandList = [None]
+
                 # how many bytes?
                 print("Bytes to read:   ", self.serial.in_waiting)
 
@@ -35,9 +45,16 @@ class Protocol:
                 command_byte = self.serial.read(1)
                 print("Command byte:    ", command_byte)
                 self.command = self.command_decode(command_byte)
-                
+                #self.serial.write(f"Command byte: {command_byte}".encode())
+
+                if self.command == "stop":
+                    self.commandList = [self.command]
+
+                    # send the list to machine
+                    return self.commandList
+
                 # when the command means to move, there should be 4 bytes of data in total
-                if self.command == "move" and self.serial.in_waiting > 2:
+                elif self.command == "move" and self.serial.in_waiting > 2:
                     # direction fetcher
                     direction_byte = self.serial.read(1)
                     print("Direction byte:  ", direction_byte)
@@ -49,20 +66,26 @@ class Protocol:
                     print("Speed byte:  ", speed_byte)
                     # decode speed back to percent
                     self.speed = self.byte_decode(speed_byte, self.max_speed)
-                    
+
                     # distance fetcher
-                    distance_byte = self.serial.read(1)
+                    distance_byte = self.serial.read(2)
                     print("Distance byte:  ", distance_byte)
                     # decode distance back to cm
-                    self.distance = self.byte_decode(distance_byte, self.max_distance)
+                    self.distance = self.bytes_decode(distance_byte)
 
                     # there should be no bytes left
                     print(self.serial.in_waiting, " bytes are left")
                     self.serial.reset_input_buffer()
 
+                    # set values in list
+                    self.commandList = [self.command, self.direction, self.speed, self.distance]
+
+                    # send the list to machine
+                    return self.commandList
+
                 # but when the command means to rotate, there should only be 3 bytes of data in total
                 elif self. command == "rotate" and self.serial.in_waiting > 1:
-                     # direction fetcher
+                    # direction fetcher
                     direction_byte = self.serial.read(1)
                     print("Direction byte:  ", direction_byte)
                     # decode direction back to degrees (angle)
@@ -78,23 +101,50 @@ class Protocol:
                     print(self.serial.in_waiting, " bytes are left")
                     self.serial.reset_input_buffer()
 
-                # sent the list to machine
-                return self.commandList
+                    # set values in list
+                    self.commandList = [self.command, self.direction, self.speed]
 
+                    # send the list to machine
+                    return self.commandList
+
+                # when finding absolutely garbage, just delete that
+                else:
+                    self.serial.reset_input_buffer()
+
+            # send the previous list again, since there are no changes
+            return self.prevCommandList
 
 
     ## "Private Functions"
     # function to decode command byte
     def command_decode(self, comm = None):
-        if comm == 1:
+#         comm = int.from_bytes(comm, "big")
+#         print(comm)
+        if comm == b"\x00":
+            self.waiting_poss = 2
+            return "stop"
+        elif comm == b"\x01":
+#             print("Move")
+            self.waiting_poss = 2
             return "move"
-        elif comm == 2:
+        elif comm == b"\x02":
+            self.waiting_poss = 2
             return "rotate"
-        elif comm > 2:
+        elif comm > b"\x02":
+            self.waiting_poss = 0
             return None
 
     # function to decode the bytes to original values
     def byte_decode(self, byte, max_value = 100):
+        byte = int.from_bytes(byte, "big")
+        # print(byte)
         max_byte_val = 255
         # undo de encoding of the byte using the parameters values
         return round(byte * max_value / max_byte_val)
+
+    # function to decode the bytes to original values
+    def bytes_decode(self, byte):
+#         print("HERE")
+        byte = int.from_bytes(byte, "big")
+#         print(byte)
+        return byte
