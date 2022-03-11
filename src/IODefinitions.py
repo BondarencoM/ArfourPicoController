@@ -63,8 +63,7 @@ BR_DirB.direction = digitalio.Direction.OUTPUT
 FL_EnA = DigitalInOut(board.GP8)
 FL_EnA.direction = digitalio.Direction.INPUT
 #FL_EnB	-> GP9
-FL_EnB = DigitalInOut(board.GP9)
-FL_EnB.direction = digitalio.Direction.INPUT
+FL_EnB = board.GP9
 
 #ENCODER FRONT RIGHT
 #FR_EnA	-> GP11

@@ -1,5 +1,3 @@
-from digitalio import DigitalInOut
-
 class Motor():
 
     def __init__(self, pwmDrive, dirF, dirB):
@@ -7,10 +5,10 @@ class Motor():
         self.Forward = dirF
         self.Backward = dirB
 
-    def Move(self, direction_wheel, speed=0):
+    def Move(self, direction_wheel, output_pid=0):
         self.Forward.value = direction_wheel
         self.Backward.value = not direction_wheel
+        self.PWM_drive.duty_cycle = int(output_pid)
 
-        self.PWM_drive.duty_cycle = int((2 ** 16 -1) * speed / 100)
 
 
