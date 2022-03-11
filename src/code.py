@@ -1,10 +1,12 @@
 from Machine import Machine
 import time
+from Wheel import Wheel
 print("Starting")
 m = Machine()
 
-m.Move(0, 1000, 100)
-m.Move(0, 1000, 100)
+m.Move(0, 465, 50)
+m.Move(0, 465, 50)
+
 # while True:
 #     speed = 25
 #     inbetweenDelay = 0.75
