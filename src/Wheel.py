@@ -59,7 +59,7 @@ class Wheel:
             self.EncA_Pulses_New = self.runEncoder.position
         if self.EncA_Pulses_New != self.EncA_Pulses_Old :
             self.Delta_Time = Time_1 - self.Time_2
-            self.Delta_pulses = self.EncA_Pulses_New - self.EncA_Pulses_Old
+            self.Delta_pulses = abs(self.EncA_Pulses_New - self.EncA_Pulses_Old)
             self.Rotations = self.Delta_pulses / 155
             self.RPS = (self.Rotations) / (self.Delta_Time)
             self.RPM = self.RPS * 60
