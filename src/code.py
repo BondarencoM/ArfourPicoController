@@ -11,8 +11,9 @@ comms = protocol.Protocol()
 m = Machine()
 
 current_command = [None]
+last_command = [None]
 
-execute = True
+should_execute = True
 
 ## Loop
 while True:
@@ -22,31 +23,36 @@ while True:
     # only when ther is a command
     if current_command is not []:
         # when move_10m
-        if current_command[0] == "move_10m" and execute:
+        if current_command[0] == "move_10m" and should_execute:
             direction = current_command[1]  # 0 degrees
             speed = current_command[3]      # 50% 
             m.Move(direction, 465, speed)
+            should_execute = False
 
         # when move_1m
-        if current_command[0]== "move_1m" and execute:
+        if current_command[0]== "move_1m":
             direction = current_command[1]  ## angle in degrees
             speed = current_command[2]      ## 50%
-            inbetweenDelay = 2
 
-            # move 1 meter forward
-            m.Move(direction, 75, speed)    
+            if direction == 0 and should_execute:
+                # move 1 meter forward
+                m.Move(direction, 75, speed)
+                should_execute = False   
 
-            time.sleep(inbetweenDelay)
+            if direction == 270 and should_execute:
+                # move 1 meter to the right
+                m.Move(direction, 110, speed)
+                should_execute = False
 
-            # move 1 meter to the right
-            m.Move(270, 110, speed)
+            if direction == 180 and should_execute:
+                # move 1 meter backwards
+                m.Move(direction, 75, speed)
+                should_execute = False
 
-            time.sleep(inbetweenDelay)
+            if direction == 90 and should_execute:
+                # move 1 meter to the left
+                m.Move(direction, 110, speed)
+                should_execute = False
 
-            # move 1 meter backwards
-            m.Move(180, 75, speed)
-
-            time.sleep(inbetweenDelay)
-
-            # move 1 meter to the left
-            m.Move(90, 110, speed)
+    # done with this command, so save to last command
+    last_command = current_command
