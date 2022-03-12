@@ -106,6 +106,66 @@ class Protocol:
 
                     # send the list to machine
                     return self.commandList
+                
+                # but when the command means to move 10 meters staight, there should be 4 bytes of data in total
+                elif self. command == "move_10m" and self.serial.in_waiting > 2:
+                    # direction fetcher
+                    direction_byte = self.serial.read(1)
+                    print("Direction byte:  ", direction_byte)
+                    # decode direction back to degrees (angle)
+                    self.direction = self.byte_decode(direction_byte, self.max_direction)
+
+                    # speed fetcher
+                    speed_byte = self.serial.read(1)
+                    print("Speed byte:  ", speed_byte)
+                    # decode speed back to percent
+                    self.speed = self.byte_decode(speed_byte, self.max_speed)
+
+                    # distance fetcher
+                    distance_byte = self.serial.read(2)
+                    print("Distance byte:  ", distance_byte)
+                    # decode distance back to cm
+                    self.distance = self.bytes_decode(distance_byte)
+
+                    # there should be no bytes left
+                    print(self.serial.in_waiting, " bytes are left")
+                    self.serial.reset_input_buffer()
+
+                    # set values in list
+                    self.commandList = [self.command, self.direction, self.speed, self.direction]
+
+                    # send the list to machine
+                    return self.commandList
+
+                # but when the command means to move 1 meter staight, there should be 4 bytes of data in total
+                elif self. command == "move_1m" and self.serial.in_waiting > 2:
+                    # direction fetcher
+                    direction_byte = self.serial.read(1)
+                    print("Direction byte:  ", direction_byte)
+                    # decode direction back to degrees (angle)
+                    self.direction = self.byte_decode(direction_byte, self.max_direction)
+
+                    # speed fetcher
+                    speed_byte = self.serial.read(1)
+                    print("Speed byte:  ", speed_byte)
+                    # decode speed back to percent
+                    self.speed = self.byte_decode(speed_byte, self.max_speed)
+
+                    # distance fetcher
+                    distance_byte = self.serial.read(2)
+                    print("Distance byte:  ", distance_byte)
+                    # decode distance back to cm
+                    self.distance = self.bytes_decode(distance_byte)
+
+                    # there should be no bytes left
+                    print(self.serial.in_waiting, " bytes are left")
+                    self.serial.reset_input_buffer()
+
+                    # set values in list
+                    self.commandList = [self.command, self.direction, self.speed, self.direction]
+
+                    # send the list to machine
+                    return self.commandList
 
                 # when finding absolutely garbage, just delete that
                 else:
@@ -121,7 +181,7 @@ class Protocol:
 #         comm = int.from_bytes(comm, "big")
 #         print(comm)
         if comm == b"\x00":
-            self.waiting_poss = 2
+            self.waiting_poss = 0
             return "stop"
         elif comm == b"\x01":
 #             print("Move")
@@ -130,7 +190,14 @@ class Protocol:
         elif comm == b"\x02":
             self.waiting_poss = 2
             return "rotate"
-        elif comm > b"\x02":
+        elif comm == b"\x03":
+            self.waiting_poss = 2
+            return "move_10m"
+        elif comm == b"\x04":
+            self.waiting_poss = 2
+            return "move_1m"
+        
+        elif comm > b"\x04":
             self.waiting_poss = 0
             return None
 
