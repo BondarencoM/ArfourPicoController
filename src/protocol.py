@@ -1,4 +1,5 @@
 # imports
+from math import dist
 import usb_cdc
 
 # Communication Class
@@ -8,13 +9,13 @@ class Protocol:
     waiting_poss = 2
 
     # sent data storage
-    command = None
+    command = "stop"
     direction = None
     speed = None
     distance = None
 
     commandList = []
-    prevCommandList = []
+    stopCommandList = [command, direction, speed, distance]    # meant to be "empty" so command is stop, speed is 0 and so on
 
     # encoding values
     max_direction = 359
@@ -30,9 +31,6 @@ class Protocol:
     def update_command(self):
         # when the connection is there
         if self.serial.connected:
-            # save previous list
-            self.prevCommandList = self.commandList
-
             # when there is new data
             if self.serial.in_waiting > self.waiting_poss:
                 # clear the current list
@@ -171,35 +169,33 @@ class Protocol:
                 else:
                     self.serial.reset_input_buffer()
 
-            # send the previous list again, since there are no changes
-            return self.prevCommandList
+            # send the stop list again, since there is no new command
+            return self.stopCommandList
 
 
     ## "Private Functions"
     # function to decode command byte
     def command_decode(self, comm = None):
 #         comm = int.from_bytes(comm, "big")
-#         print(comm)
-        if comm == b"\x00":
+        if comm == b"\x00":     # means stop command
             self.waiting_poss = 0
             return "stop"
-        elif comm == b"\x01":
-#             print("Move")
+        elif comm == b"\x01":   # means move command
             self.waiting_poss = 2
             return "move"
-        elif comm == b"\x02":
+        elif comm == b"\x02":   # means rotate command
             self.waiting_poss = 2
             return "rotate"
-        elif comm == b"\x03":
+        elif comm == b"\x03":   # means move 10m command
             self.waiting_poss = 2
             return "move_10m"
-        elif comm == b"\x04":
+        elif comm == b"\x04":   # means move 1m command
             self.waiting_poss = 2
             return "move_1m"
         
-        elif comm > b"\x04":
+        elif comm > b"\x04":   # error, this should never happen, so sent stop command
             self.waiting_poss = 0
-            return None
+            return "stop"
 
     # function to decode the bytes to original values
     def byte_decode(self, byte, max_value = 100):
@@ -211,7 +207,7 @@ class Protocol:
 
     # function to decode the bytes to original values
     def bytes_decode(self, byte):
-#         print("HERE")
+        # this should alwas make an int (in cm) from two bytes
         byte = int.from_bytes(byte, "big")
 #         print(byte)
         return byte

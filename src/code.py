@@ -22,6 +22,10 @@ while True:
 
     # only when ther is a command
     if current_command is not []:
+        if current_command[0] == "stop":
+            m.Move(0, 0, 0)
+            should_execute = False
+        
         # when move_10m
         if current_command[0] == "move_10m" and should_execute:
             direction = current_command[1]  # 0 degrees
