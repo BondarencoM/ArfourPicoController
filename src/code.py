@@ -20,16 +20,24 @@ while True:
     # check for updates
     current_command = comms.update_command()
 
+    if current_command != last_command:
+        should_execute= True
+        last_command = current_command
+
     # only when ther is a command
-    if current_command is not []:
-        if current_command[0] == "stop":
-            m.Move(0, 0, 0)
+    if current_command and current_command is not []:
+
+        if current_command[0] != 'stop':
+           print(current_command)
+
+        if current_command[0] == "stop" and should_execute:
+            m.Stop()
             should_execute = False
-        
+
         # when move_10m
         if current_command[0] == "move_10m" and should_execute:
             direction = current_command[1]  # 0 degrees
-            speed = current_command[3]      # 50% 
+            speed = current_command[2]      # 50%
             m.Move(direction, 465, speed)
             should_execute = False
 
@@ -41,7 +49,7 @@ while True:
             if direction == 0 and should_execute:
                 # move 1 meter forward
                 m.Move(direction, 75, speed)
-                should_execute = False   
+                should_execute = False
 
             if direction == 270 and should_execute:
                 # move 1 meter to the right

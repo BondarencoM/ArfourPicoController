@@ -1,12 +1,11 @@
 # imports
-from math import dist
 import usb_cdc
 
 # Communication Class
 class Protocol:
     ## "Private Variables"
     # value to check for when searching for data
-    waiting_poss = 2
+    waiting_poss = 4
 
     # sent data storage
     command = "stop"
@@ -25,6 +24,7 @@ class Protocol:
     # Initialition
     def __init__(self):
         self.serial = usb_cdc.data
+        self.serial.reset_input_buffer()
         self.commandList = [None]
 
     # function to get the new orders
@@ -52,7 +52,7 @@ class Protocol:
                     return self.commandList
 
                 # when the command means to move, there should be 4 bytes of data in total
-                elif self.command == "move" and self.serial.in_waiting > 2:
+                elif self.command == "move" and self.serial.in_waiting > 3:
                     # direction fetcher
                     direction_byte = self.serial.read(1)
                     print("Direction byte:  ", direction_byte)
@@ -104,9 +104,9 @@ class Protocol:
 
                     # send the list to machine
                     return self.commandList
-                
+
                 # but when the command means to move 10 meters staight, there should be 4 bytes of data in total
-                elif self. command == "move_10m" and self.serial.in_waiting > 2:
+                elif self. command == "move_10m" and self.serial.in_waiting > 3:
                     # direction fetcher
                     direction_byte = self.serial.read(1)
                     print("Direction byte:  ", direction_byte)
@@ -130,13 +130,13 @@ class Protocol:
                     self.serial.reset_input_buffer()
 
                     # set values in list
-                    self.commandList = [self.command, self.direction, self.speed, self.direction]
+                    self.commandList = [self.command, self.direction, self.speed, self.distance]
 
                     # send the list to machine
                     return self.commandList
 
                 # but when the command means to move 1 meter staight, there should be 4 bytes of data in total
-                elif self. command == "move_1m" and self.serial.in_waiting > 2:
+                elif self. command == "move_1m" and self.serial.in_waiting > 3:
                     # direction fetcher
                     direction_byte = self.serial.read(1)
                     print("Direction byte:  ", direction_byte)
@@ -181,33 +181,33 @@ class Protocol:
             self.waiting_poss = 0
             return "stop"
         elif comm == b"\x01":   # means move command
-            self.waiting_poss = 2
+            self.waiting_poss = 4
             return "move"
         elif comm == b"\x02":   # means rotate command
-            self.waiting_poss = 2
+            self.waiting_poss = 4
             return "rotate"
         elif comm == b"\x03":   # means move 10m command
-            self.waiting_poss = 2
+            self.waiting_poss = 4
             return "move_10m"
         elif comm == b"\x04":   # means move 1m command
-            self.waiting_poss = 2
+            self.waiting_poss = 4
             return "move_1m"
-        
+
         elif comm > b"\x04":   # error, this should never happen, so sent stop command
-            self.waiting_poss = 0
+            self.waiting_poss = 4
             return "stop"
 
     # function to decode the bytes to original values
-    def byte_decode(self, byte, max_value = 100):
-        byte = int.from_bytes(byte, "big")
-        # print(byte)
+    def byte_decode(self, input_byte, max_value = 100):
+        byte = int.from_bytes(input_byte, "big")
+        print(input_byte, ' -> ', byte)
         max_byte_val = 255
         # undo de encoding of the byte using the parameters values
         return round(byte * max_value / max_byte_val)
 
     # function to decode the bytes to original values
-    def bytes_decode(self, byte):
+    def bytes_decode(self, input_byte):
         # this should alwas make an int (in cm) from two bytes
-        byte = int.from_bytes(byte, "big")
+        byte = int.from_bytes(input_byte, "big")
 #         print(byte)
         return byte

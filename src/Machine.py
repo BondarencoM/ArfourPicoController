@@ -14,7 +14,6 @@ class Machine():
         self.back_right = Wheel(ios.BR_PWM, ios.BR_DirF, ios.BR_DirB, ios.BR_EnA, ios.BR_EnB)
 
     def Move(self, direction_platform, distance, speed):
-
         if direction_platform == 0:
             self.front_left.Move(True, distance, speed, 165)
             self.front_right.Move(True, distance, speed, 150)
@@ -84,10 +83,10 @@ class Machine():
                 time.sleep(POLL_DELAY)
 
     def Stop(self):
-        self.front_left.Move(True, 0, 0)
-        self.front_right.Move(False, 0, 0)
-        self.back_left.Move(False, 0, 0)
-        self.back_right.Move(True, 0, 0)
+        self.front_left.runMotor.Move(True, 0,)
+        self.front_right.runMotor.Move(False, 0)
+        self.back_left.runMotor.Move(False, 0)
+        self.back_right.runMotor.Move(True, 0)
 
     def UpdateAll(self):
         return self.front_left.Update() and self.front_right.Update() and self.back_left.Update() and self.back_right.Update()
